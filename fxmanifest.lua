@@ -6,7 +6,7 @@ lua54 'yes'
 name 'feather-settings'
 description 'Player settings presentation for Feather Framework'
 author 'Feather Framework'
-version '0.1.3'
+version '0.1.4'
 
 shared_scripts {
     'config.lua',
@@ -20,6 +20,6 @@ client_scripts {
 
 dependencies {
     'feather-core',
-    'feather-menu',
+    'feather-menu-v2',
     'feather-pvp'
 }
