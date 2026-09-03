@@ -20,6 +20,6 @@ client_scripts {
 
 dependencies {
     'feather-core',
-    'feather-menu',
+    'feather-menu-v2',
     'feather-pvp'
 }

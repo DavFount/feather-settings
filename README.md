@@ -1,6 +1,6 @@
 # Feather Settings
 
-Owns the player settings menu and its PGUP input. Locale persistence remains a minimal Core account primitive, while PVP state is provided by `feather-pvp`.
+Owns the player settings menu and its PGUP input. It consumes the framework-agnostic `feather-menu-v2` Contract 1 API. Locale persistence remains a minimal Core account primitive, while PVP state is provided by `feather-pvp`.
 
 Feature resources can add bounded choice controls without moving preference
 ownership into Settings:
@@ -33,4 +33,13 @@ Supported controls are `dropdown`, `arrows`, and `slider`. Sliders use numeric
 `min`, `max`, and `step` fields; arrows use the same bounded option documents as
 dropdowns.
 
-Test in F8 with `SettingsClientSmokeTest`, then open the menu with PGUP and verify PVP and language changes.
+Test in F8 with `SettingsClientSmokeTest`, then open the menu with PGUP and verify PVP and language changes. Locale labels update reactively through `ApplyPatch`; the menu is not closed, rebuilt, or reopened to refresh translated Lua strings.
+
+For the v2 migration live gate:
+
+1. start Legacy `feather-menu`, `feather-menu-v2`, and `feather-settings` together;
+2. run `SettingsClientSmokeTest` and require all three rows to pass;
+3. open Settings with PGUP, toggle PVP, and exercise any registered dropdown/arrows/slider providers;
+4. change locale and confirm the translated title and language label update without the menu closing or flashing;
+5. restart `feather-menu-v2` while Settings remains loaded, wait for v2 readiness, and confirm PGUP opens one rebuilt Settings menu with no duplicate provider controls; and
+6. restart `feather-settings` and confirm providers return once without duplicates.

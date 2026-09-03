@@ -3,6 +3,13 @@ SettingsProviders = {
     onChanged = nil,
 }
 
+local function IsCallable(value)
+    if type(value) == 'function' then return true end
+    if type(value) ~= 'table' and type(value) ~= 'userdata' then return false end
+    local metatable = getmetatable(value)
+    return type(metatable) == 'table' and type(metatable.__call) == 'function'
+end
+
 local function IsChoiceSpecValid(spec)
     if type(spec) ~= 'table' or type(spec.id) ~= 'string' or spec.id == '' then return false, 'invalid id' end
     if #spec.id > 100 or not spec.id:match('^[%w%._:%-]+$') then return false, 'invalid id' end
@@ -18,7 +25,7 @@ local function IsChoiceSpecValid(spec)
     elseif type(spec.options) ~= 'table' or #spec.options < 2 or #spec.options > 20 then
         return false, 'invalid options'
     end
-    local callbackPair = type(spec.getValue) == 'function' and type(spec.setValue) == 'function'
+    local callbackPair = IsCallable(spec.getValue) and IsCallable(spec.setValue)
     local exportPair = type(spec.getExport) == 'string' and spec.getExport ~= ''
         and type(spec.setExport) == 'string' and spec.setExport ~= ''
     local eventPair = spec.initialValue ~= nil and type(spec.setEvent) == 'string'
@@ -27,6 +34,7 @@ local function IsChoiceSpecValid(spec)
         return false, ('invalid accessors get=%s set=%s getExport=%s setExport=%s setEvent=%s'):format(
             type(spec.getValue), type(spec.setValue), type(spec.getExport), type(spec.setExport), type(spec.setEvent))
     end
+    if spec.isVisible ~= nil and not IsCallable(spec.isVisible) then return false, 'invalid visibility callback' end
 
     local values = {}
     for _, option in ipairs(spec.options or {}) do
